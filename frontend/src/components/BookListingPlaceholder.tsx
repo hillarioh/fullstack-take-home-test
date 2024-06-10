@@ -1,12 +1,39 @@
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
+
 export default function BooklistingItemPlaceholder() {
   return (
-    <div className="rounded-2xl bg-white">
-      <div className="aspect-video overflow-hidden rounded-t-2xl bg-greyish"></div>
-      <div className="flex animate-pulse flex-col gap-3 p-4">
-        <p className="max-w-[80%] rounded-xl bg-greyish/40 p-3"></p>
-        <p className="max-w-[60%] rounded-xl bg-greyish/40 p-2"></p>
-        <p className="max-w-[40%] rounded-xl bg-greyish/40 p-2"></p>
-      </div>
-    </div>
+    <Paper
+      sx={{
+        borderRadius: 2,
+        backgroundColor: "background.paper",
+        overflow: "hidden",
+      }}
+    >
+      <Box
+        sx={{
+          position: "relative",
+          paddingTop: "56.25%",
+          backgroundColor: "grey.300",
+        }}
+      />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          p: 2,
+          "& > *": {
+            borderRadius: 1,
+            backgroundColor: "grey.200",
+          },
+        }}
+      >
+        <Skeleton variant="rectangular" width="80%" height={24} />
+        <Skeleton variant="rectangular" width="60%" height={24} />
+        <Skeleton variant="rectangular" width="40%" height={24} />
+      </Box>
+    </Paper>
   );
 }

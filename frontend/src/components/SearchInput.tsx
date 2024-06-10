@@ -1,4 +1,13 @@
 import { useState, useMemo } from "react";
+import Box from "@mui/material/Box";
+import InputBase from "@mui/material/InputBase";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Button from "@mui/material/Button";
 import { Book } from "../types/book";
 
 type SearchInputProps = {
@@ -15,46 +24,105 @@ export default function SearchInput({ options }: SearchInputProps) {
   }, [searchName, options]);
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="relative w-1/2">
-        <input
-          type="text"
-          className="w-full p-2 my-1 text-gray-700 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    <Box display="flex" justifyContent="center" mb={2} width="100%">
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          maxWidth: { xs: "100%", md: "50%" },
+        }}
+      >
+        <InputBase
+          fullWidth
           placeholder="Search Book"
           onChange={(e) => setSearchName(e.target.value)}
+          sx={{
+            padding: 1,
+            border: "1px solid",
+            borderColor: "grey.300",
+            borderRadius: 1,
+            boxShadow: 1,
+            "&:focus-within": {
+              borderColor: "blue.500",
+              boxShadow: `0 0 0 2px rgba(0, 0, 255, 0.2)`,
+            },
+          }}
         />
         {searchName && (
-          <div className="absolute h-[300px] bg-slate-50 border border-gray-300 w-full z-30 overflow-auto">
+          <Paper
+            sx={{
+              position: "absolute",
+              width: "100%",
+              maxHeight: 300,
+              overflowY: "auto",
+              zIndex: 10,
+              backgroundColor: "background.paper",
+              border: "1px solid",
+              borderColor: "divider",
+              mt: 1,
+            }}
+          >
             {searchedBooks.length > 0 ? (
-              searchedBooks.map((option, i) => (
-                <div className="flex my-2 p-2 max-h-[200px]">
-                  <picture>
-                    <img
-                      src={`${process.env.PUBLIC_URL}/${option.coverPhotoURL}`}
-                      alt={`${i} ${option.title} `}
-                      width={80}
-                      className="h-full"
-                    />
-                  </picture>
-                  <div className="px-2">
-                    <p className="text-[16px] text-[#2c3232] font-bold">
-                      {option.title}
-                    </p>
-                    <p className="text-[13px] text-[#9da9aa] font-semibold">
-                      {option.author}
-                    </p>
-                    <button className="bg-[#5acccc] hover:bg-[#53c2c2] px-4 py-2 text-white rounded font-bold">
-                      Add to Reading list
-                    </button>
-                  </div>
-                </div>
-              ))
+              <List>
+                {searchedBooks.map((option, i) => (
+                  <ListItem alignItems="flex-start" key={i}>
+                    <ListItemAvatar>
+                      <img
+                        src={`${process.env.PUBLIC_URL}/${option.coverPhotoURL}`}
+                        alt={`${option.title}`}
+                        style={{ height: 80, width: 80, objectFit: "cover" }}
+                      />
+                    </ListItemAvatar>
+                    <Box display="flex" flexDirection="column" ml={2}>
+                      <ListItemText
+                        primary={
+                          <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            color="textPrimary"
+                          >
+                            {option.title}
+                          </Typography>
+                        }
+                        secondary={
+                          <Typography
+                            variant="body2"
+                            fontWeight="medium"
+                            color="textSecondary"
+                          >
+                            {option.author}
+                          </Typography>
+                        }
+                      />
+                      <Box>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          sx={{
+                            mt: 1,
+                            fontWeight: 600,
+                            backgroundColor: "#5acccc",
+                            "&:hover": {
+                              backgroundColor: "#53c2c2",
+                            },
+                          }}
+                        >
+                          Add to Reading List
+                        </Button>
+                      </Box>
+                    </Box>
+                  </ListItem>
+                ))}
+              </List>
             ) : (
-              <p>No Book with the title</p>
+              <Typography variant="body2" color="textSecondary" p={2}>
+                No Book with the title
+              </Typography>
             )}
-          </div>
+          </Paper>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
