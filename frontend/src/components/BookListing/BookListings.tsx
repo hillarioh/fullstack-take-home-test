@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Book } from "./types/book";
-import BooklistingItemPlaceholder from "./components/BookListingPlaceholder";
+import { Book } from "../../types/book";
+import BooklistingItemPlaceholder from "./BookListingPlaceholder";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import BookListingItem from "./BookListingItem";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import { useParams, useLocation } from "react-router-dom";
 
 type BookListingsProps = {
   bookListings: Book[];
@@ -14,6 +15,9 @@ type BookListingsProps = {
 
 export default function BookListings({ bookListings }: BookListingsProps) {
   const [page, setPage] = useState(1);
+
+  let location = useLocation();
+
   const itemsPerPage = 12;
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -28,19 +32,11 @@ export default function BookListings({ bookListings }: BookListingsProps) {
   return (
     <Container>
       <Grid container spacing={2} justifyContent="center">
-        {!paginatedListing
-          ? Array(8)
-              .fill("")
-              .map((_, i) => (
-                <Grid item xs={12} sm={6} md={3} key={i}>
-                  <BooklistingItemPlaceholder />
-                </Grid>
-              ))
-          : paginatedListing.map((book, j) => (
-              <Grid item xs={12} sm={6} md={3} key={j}>
-                <BookListingItem bookItem={book} />
-              </Grid>
-            ))}
+        {paginatedListing.map((book, j) => (
+          <Grid item xs={12} sm={6} md={3} key={j}>
+            <BookListingItem bookItem={book} page={location.pathname} />
+          </Grid>
+        ))}
       </Grid>
 
       <Box display="flex" justifyContent="center" py={4}>

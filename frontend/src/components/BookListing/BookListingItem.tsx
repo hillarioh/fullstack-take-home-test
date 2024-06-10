@@ -1,4 +1,4 @@
-import { Book } from "./types/book";
+import { Book } from "../../types/book";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -8,9 +8,13 @@ import Box from "@mui/material/Box";
 
 type BookListingItemProps = {
   bookItem: Book;
+  page: string;
 };
 
-export default function BookListingItem({ bookItem }: BookListingItemProps) {
+export default function BookListingItem({
+  bookItem,
+  page,
+}: BookListingItemProps) {
   return (
     <Card
       sx={{
@@ -58,11 +62,13 @@ export default function BookListingItem({ bookItem }: BookListingItemProps) {
         <Typography variant="body2" fontSize={"13px"} fontWeight={600}>
           Level: {bookItem.readingLevel}
         </Typography>
-        <Box mt={2}>
-          <Button variant="outlined" color="error">
-            Remove
-          </Button>
-        </Box>
+        {page !== "/" && (
+          <Box mt={2}>
+            <Button variant="outlined" color="error">
+              Remove
+            </Button>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

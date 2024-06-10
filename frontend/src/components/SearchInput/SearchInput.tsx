@@ -8,7 +8,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Button from "@mui/material/Button";
-import { Book } from "../types/book";
+import { Book } from "../../types/book";
+import { useBookContext } from "../../contexts/BookContext";
 
 type SearchInputProps = {
   options: Book[];
@@ -16,12 +17,18 @@ type SearchInputProps = {
 
 export default function SearchInput({ options }: SearchInputProps) {
   const [searchName, setSearchName] = useState("");
+  const { setBooks, books } = useBookContext();
+  console.log(books);
 
   const searchedBooks = useMemo(() => {
     let nameRegex = new RegExp(`${searchName}`, "i");
 
     return options.filter((opt) => nameRegex.test(`${opt.title}`));
   }, [searchName, options]);
+
+  const handleAddListing = (bookItem: Book) => {
+    setBooks((books) => [...books, bookItem]);
+  };
 
   return (
     <Box display="flex" justifyContent="center" mb={2} width="100%">
@@ -99,6 +106,7 @@ export default function SearchInput({ options }: SearchInputProps) {
                           variant="contained"
                           color="primary"
                           size="small"
+                          onClick={() => handleAddListing(option)}
                           sx={{
                             mt: 1,
                             fontWeight: 600,
