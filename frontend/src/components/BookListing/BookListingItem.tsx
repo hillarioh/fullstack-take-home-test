@@ -5,6 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { useBookContext } from "../../contexts/BookContext";
 
 type BookListingItemProps = {
   bookItem: Book;
@@ -15,6 +16,11 @@ export default function BookListingItem({
   bookItem,
   page,
 }: BookListingItemProps) {
+  const { setBooks } = useBookContext();
+
+  const handleRemove = () =>
+    setBooks((books) => books.filter((book) => book.title !== bookItem.title));
+
   return (
     <Card
       sx={{
@@ -64,7 +70,7 @@ export default function BookListingItem({
         </Typography>
         {page !== "/" && (
           <Box mt={2}>
-            <Button variant="outlined" color="error">
+            <Button variant="outlined" color="error" onClick={handleRemove}>
               Remove
             </Button>
           </Box>

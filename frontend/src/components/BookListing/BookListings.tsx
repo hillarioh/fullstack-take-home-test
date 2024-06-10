@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { Book } from "../../types/book";
-import BooklistingItemPlaceholder from "./BookListingPlaceholder";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import BookListingItem from "./BookListingItem";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 type BookListingsProps = {
   bookListings: Book[];

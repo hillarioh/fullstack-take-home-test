@@ -1,15 +1,12 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Button from "@mui/material/Button";
 import { Book } from "../../types/book";
 import { useBookContext } from "../../contexts/BookContext";
+import SearchResultItem from "./SearchResultItem";
 
 type SearchInputProps = {
   options: Book[];
@@ -17,8 +14,8 @@ type SearchInputProps = {
 
 export default function SearchInput({ options }: SearchInputProps) {
   const [searchName, setSearchName] = useState("");
-  const { setBooks, books } = useBookContext();
-  console.log(books);
+  const { setBooks } = useBookContext();
+  const ref = useRef<HTMLDivElement>(null);
 
   const searchedBooks = useMemo(() => {
     let nameRegex = new RegExp(`${searchName}`, "i");
@@ -26,9 +23,22 @@ export default function SearchInput({ options }: SearchInputProps) {
     return options.filter((opt) => nameRegex.test(`${opt.title}`));
   }, [searchName, options]);
 
-  const handleAddListing = (bookItem: Book) => {
-    setBooks((books) => [...books, bookItem]);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node)) {
+      setSearchName("");
+    }
   };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleAddListing = (bookItem: Book) =>
+    setBooks((books) => [...books, bookItem]);
 
   return (
     <Box display="flex" justifyContent="center" mb={2} width="100%">
@@ -43,6 +53,7 @@ export default function SearchInput({ options }: SearchInputProps) {
           fullWidth
           placeholder="Search Book"
           onChange={(e) => setSearchName(e.target.value)}
+          value={searchName}
           sx={{
             padding: 1,
             border: "1px solid",
@@ -70,59 +81,16 @@ export default function SearchInput({ options }: SearchInputProps) {
             }}
           >
             {searchedBooks.length > 0 ? (
-              <List>
-                {searchedBooks.map((option, i) => (
-                  <ListItem alignItems="flex-start" key={i}>
-                    <ListItemAvatar>
-                      <img
-                        src={`${process.env.PUBLIC_URL}/${option.coverPhotoURL}`}
-                        alt={`${option.title}`}
-                        style={{ height: 80, width: 80, objectFit: "cover" }}
-                      />
-                    </ListItemAvatar>
-                    <Box display="flex" flexDirection="column" ml={2}>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            variant="body1"
-                            fontWeight="bold"
-                            color="textPrimary"
-                          >
-                            {option.title}
-                          </Typography>
-                        }
-                        secondary={
-                          <Typography
-                            variant="body2"
-                            fontWeight="medium"
-                            color="textSecondary"
-                          >
-                            {option.author}
-                          </Typography>
-                        }
-                      />
-                      <Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          onClick={() => handleAddListing(option)}
-                          sx={{
-                            mt: 1,
-                            fontWeight: 600,
-                            backgroundColor: "#5acccc",
-                            "&:hover": {
-                              backgroundColor: "#53c2c2",
-                            },
-                          }}
-                        >
-                          Add to Reading List
-                        </Button>
-                      </Box>
-                    </Box>
-                  </ListItem>
-                ))}
-              </List>
+              <Box ref={ref}>
+                <List>
+                  {searchedBooks.map((option, i) => (
+                    <SearchResultItem
+                      option={option}
+                      handleAddListing={handleAddListing}
+                    />
+                  ))}
+                </List>
+              </Box>
             ) : (
               <Typography variant="body2" color="textSecondary" p={2}>
                 No Book with the title
